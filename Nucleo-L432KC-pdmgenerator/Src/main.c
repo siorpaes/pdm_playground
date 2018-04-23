@@ -351,7 +351,7 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-void SPI_DMATransmitCplt(void)
+void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
 {
 	HAL_GPIO_TogglePin(LD3_GPIO_Port, LD3_Pin);
 }
