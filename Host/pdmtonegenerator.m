@@ -1,8 +1,8 @@
 clear all;
-Fs = 1000000;
+Fs = 2048000;
 Ts = 1/Fs;
-Ftone = 500;
-Attenuation = 20;
+Ftone = 512;
+Attenuation = 8;
 
 % This must be integer!
 Nperiod = Fs/Ftone;
