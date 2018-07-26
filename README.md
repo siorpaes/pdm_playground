@@ -7,12 +7,12 @@ needed and STM32 Cube APIs are used.
 
 Pinout
 
-|Signal        | STM32 IO | Nucleo connector |
-|--------------|:--------:|:----------------:| 
-| PDM Clock    |   PA1    |      CN4-11      | 
-| PDM Data     |   PA6    |      CN4-7       |
-| Test clkout  |   PA5    |      CN4-8       |
-| LED DMAdone  |   PB3    |      CN4-15      |
+|Signal        | STM32 IO |  Nucleo connector |
+|--------------|:--------:|:-----------------:| 
+| PDM Clock    |   PA1    |      CN4-11 [A1]  | 
+| PDM Data     |   PA6    |      CN4-7  [A5]  |
+| Test clkout  |   PA5    |      CN4-8  [A4]  |
+| LED DMAdone  |   PB3    |      CN4-15 [D13] |
 
 
 
