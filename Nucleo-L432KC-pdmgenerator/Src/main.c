@@ -127,7 +127,7 @@ int main(void)
 	if(retval != HAL_OK)
 		while(1);
 	
-	/* Enable 1MHz signal to simulate SPI master clock */
+	/* Enable 1MHz signal to simulate SPI master clock. Just for testing purposes */
 	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
 	
   /* USER CODE END 2 */
