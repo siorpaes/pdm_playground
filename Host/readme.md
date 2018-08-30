@@ -11,8 +11,6 @@ G = 10^((AOP-94)/20)
 
 If, for example, the microphone has AOP=120dBSPL, we need to apply a gain of 20.
 The other tones 'tone500HzAxx.h' in this directory are attenuated versions of the original full-scale tone and can be used to tune the gain of the decimation filter on an attenuated input signal.
-
-
 See Invensense AN-1112 for more details.
 
 
