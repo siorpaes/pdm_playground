@@ -12,7 +12,7 @@ Pinout
 | PDM Clock    |   PA1    |      CN4-11 [A1]  | 
 | PDM Data     |   PA6    |      CN4-7  [A5]  |
 | 8MHz clkout  |   PA5    |      CN4-8  [A4]  |
-| 2MHz clkout  |   PA9    |      CN3-1  [D9]  |
+| 2MHz clkout  |   PA9    |      CN3-1  [D1]  |
 | 1MHz clkout  |   PA3    |      CN4-10 [A2]  |
 | LED DMAdone  |   PB3    |      CN4-15 [D13] |
 
