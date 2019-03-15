@@ -11,13 +11,15 @@ Pinout
 |--------------|:--------:|:-----------------:| 
 | PDM Clock    |   PA1    |      CN4-11 [A1]  | 
 | PDM Data     |   PA6    |      CN4-7  [A5]  |
-| Test clkout  |   PA5    |      CN4-8  [A4]  |
+| 8MHz clkout  |   PA5    |      CN4-8  [A4]  |
+| 2MHz clkout  |   PA9    |      CN3-1  [D9]  |
+| 1MHz clkout  |   PA3    |      CN4-10 [A2]  |
 | LED DMAdone  |   PB3    |      CN4-15 [D13] |
 
 
 
 Apply PDM clock to PA1 and read resulting PDM data from PA6. A 1MHz clock is
-available on PA5 for testing purposes.
+available on PA3 for testing purposes.
 The PDM data represents a 500Hz sinusoidal tone with a period of 2000 PDM
 samples. Such parameters have been chosen in order to represent an audible
 periodic PCM tone with the constraint for the PDM period to be a multiple of 8

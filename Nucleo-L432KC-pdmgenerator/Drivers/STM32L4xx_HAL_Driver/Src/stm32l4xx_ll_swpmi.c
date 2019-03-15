@@ -47,7 +47,7 @@
   * @{
   */
 
-#if defined (SWPMI1)
+#if defined(SWPMI1)
 
 /** @addtogroup SWPMI_LL
   * @{
@@ -61,7 +61,7 @@
   * @{
   */
 
-#define IS_LL_SWPMI_BITRATE_VALUE(__VALUE__) (((__VALUE__) <= 63))
+#define IS_LL_SWPMI_BITRATE_VALUE(__VALUE__) (((__VALUE__) <= 63U))
 
 #define IS_LL_SWPMI_SW_BUFFER_RX(__VALUE__) (((__VALUE__) == LL_SWPMI_SW_BUFFER_RX_SINGLE) \
                                           || ((__VALUE__) == LL_SWPMI_SW_BUFFER_RX_MULTI))
@@ -96,13 +96,22 @@
   */
 ErrorStatus LL_SWPMI_DeInit(SWPMI_TypeDef *SWPMIx)
 {
+  ErrorStatus status = SUCCESS;
+
   /* Check the parameter */
   assert_param(IS_SWPMI_INSTANCE(SWPMIx));
 
-  LL_APB1_GRP2_ForceReset(LL_APB1_GRP2_PERIPH_SWPMI1);
-  LL_APB1_GRP2_ReleaseReset(LL_APB1_GRP2_PERIPH_SWPMI1);
+  if (SWPMIx == SWPMI1)
+  {
+    LL_APB1_GRP2_ForceReset(LL_APB1_GRP2_PERIPH_SWPMI1);
+    LL_APB1_GRP2_ReleaseReset(LL_APB1_GRP2_PERIPH_SWPMI1);
+  }
+  else
+  {
+    status = ERROR;
+  }
 
-  return SUCCESS;
+  return status;
 }
 
 /**
@@ -119,7 +128,7 @@ ErrorStatus LL_SWPMI_DeInit(SWPMI_TypeDef *SWPMIx)
 ErrorStatus LL_SWPMI_Init(SWPMI_TypeDef *SWPMIx, LL_SWPMI_InitTypeDef *SWPMI_InitStruct)
 {
   ErrorStatus status = SUCCESS;
-  
+
   /* Check the parameters */
   assert_param(IS_SWPMI_INSTANCE(SWPMIx));
   assert_param(IS_LL_SWPMI_BITRATE_VALUE(SWPMI_InitStruct->BitRatePrescaler));
@@ -128,7 +137,7 @@ ErrorStatus LL_SWPMI_Init(SWPMI_TypeDef *SWPMIx, LL_SWPMI_InitTypeDef *SWPMI_Ini
   assert_param(IS_LL_SWPMI_VOLTAGE_CLASS(SWPMI_InitStruct->VoltageClass));
 
   /* SWPMI needs to be in deactivated state, in order to be able to configure some bits */
-  if (LL_SWPMI_IsActivated(SWPMIx) == 0)
+  if (LL_SWPMI_IsActivated(SWPMIx) == 0U)
   {
     /* Configure the BRR register (Bitrate) */
     LL_SWPMI_SetBitRatePrescaler(SWPMIx, SWPMI_InitStruct->BitRatePrescaler);
@@ -177,7 +186,7 @@ void LL_SWPMI_StructInit(LL_SWPMI_InitTypeDef *SWPMI_InitStruct)
   * @}
   */
 
-#endif /* defined (SWPMI1) */
+#endif /* SWPMI1 */
 
 /**
   * @}

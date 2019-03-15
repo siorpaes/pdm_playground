@@ -133,8 +133,8 @@ HAL_StatusTypeDef HAL_DMAEx_ConfigMuxSync(DMA_HandleTypeDef *hdma, HAL_DMA_MuxSy
     MODIFY_REG( hdma->DMAmuxChannel->CCR, \
                (~DMAMUX_CxCR_DMAREQ_ID) , \
                ((pSyncConfig->SyncSignalID) << DMAMUX_CxCR_SYNC_ID_Pos) | ((pSyncConfig->RequestNumber - 1U) << DMAMUX_CxCR_NBREQ_Pos) | \
-               pSyncConfig->SyncPolarity | (pSyncConfig->SyncEnable << DMAMUX_CxCR_SE_Pos) | \
-                 (pSyncConfig->EventEnable << DMAMUX_CxCR_EGE_Pos));
+               pSyncConfig->SyncPolarity | ((uint32_t)pSyncConfig->SyncEnable << DMAMUX_CxCR_SE_Pos) | \
+                 ((uint32_t)pSyncConfig->EventEnable << DMAMUX_CxCR_EGE_Pos));
 
     /* Process UnLocked */
     __HAL_UNLOCK(hdma);
@@ -175,9 +175,9 @@ HAL_StatusTypeDef HAL_DMAEx_ConfigMuxRequestGenerator (DMA_HandleTypeDef *hdma, 
     /* Process Locked */
     __HAL_LOCK(hdma);
 
-    /* Set the request generator new parameters*/
+    /* Set the request generator new parameters */
     hdma->DMAmuxRequestGen->RGCR = pRequestGeneratorConfig->SignalID | \
-                                  ((pRequestGeneratorConfig->RequestNumber - 1U) << POSITION_VAL(DMAMUX_RGxCR_GNBREQ))| \
+                                  ((pRequestGeneratorConfig->RequestNumber - 1U) << DMAMUX_RGxCR_GNBREQ_Pos)| \
                                   pRequestGeneratorConfig->Polarity;
    /* Process UnLocked */
    __HAL_UNLOCK(hdma);
