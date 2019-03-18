@@ -216,7 +216,7 @@ void Open_PDM_Filter_Init(TPDMFilter_InitStruct *Param)
 #endif
 }
 
-void Open_PDM_Filter_64(uint8_t* data, uint16_t* dataOut, uint16_t volume, TPDMFilter_InitStruct *Param)
+void Open_PDM_Filter_64(uint8_t* data, int16_t* dataOut, uint16_t volume, TPDMFilter_InitStruct *Param)
 {
   uint8_t i, data_out_index;
   uint8_t channels = Param->In_MicChannels;
@@ -264,7 +264,7 @@ void Open_PDM_Filter_64(uint8_t* data, uint16_t* dataOut, uint16_t volume, TPDMF
   Param->OldZ = OldZ;
 }
 
-void Open_PDM_Filter_128(uint8_t* data, uint16_t* dataOut, uint16_t volume, TPDMFilter_InitStruct *Param)
+void Open_PDM_Filter_128(uint8_t* data, int16_t* dataOut, uint16_t volume, TPDMFilter_InitStruct *Param)
 {
   uint8_t i, data_out_index;
   uint8_t channels = Param->In_MicChannels;

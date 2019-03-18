@@ -86,8 +86,8 @@ typedef struct {
 /* Exported functions ------------------------------------------------------- */
 
 void Open_PDM_Filter_Init(TPDMFilter_InitStruct *init_struct);
-void Open_PDM_Filter_64(uint8_t* data, uint16_t* data_out, uint16_t mic_gain, TPDMFilter_InitStruct *init_struct);
-void Open_PDM_Filter_128(uint8_t* data, uint16_t* data_out, uint16_t mic_gain, TPDMFilter_InitStruct *init_struct);
+void Open_PDM_Filter_64(uint8_t* data, int16_t* data_out, uint16_t mic_gain, TPDMFilter_InitStruct *init_struct);
+void Open_PDM_Filter_128(uint8_t* data, int16_t* data_out, uint16_t mic_gain, TPDMFilter_InitStruct *init_struct);
 
 #ifdef __cplusplus
 }
