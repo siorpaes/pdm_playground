@@ -1,7 +1,10 @@
 /** \file pdm2pcm.c
+ * \author david.siorpaes@gmail.com
+ *
  * Uses OpenPDM library to decode pdm data coming from standard input
  * and sends PCM data to standard output
  * Usage:
+ *
  * bzcat bellazio.txt.bz2 | ./txt2bin | ./pdm2pcm | aplay -fS16_LE -c1 -r8000
  */
 
@@ -15,12 +18,6 @@
 
 /* Open PDM library settings */
 #define GAIN           (1)
-
-#if 0
-#define PDM_SAMPLING_F (1000000)
-#define DECIMATION_F   (100)
-#endif
-
 #define PDM_SAMPLING_F (1024000)
 #define DECIMATION_F   (128)
 #define PCM_SAMPLING_F (PDM_SAMPLING_F/DECIMATION_F)
@@ -65,18 +62,6 @@ int main(int argc, char** argv)
 			dataCount += ret;
 		}
 
-#if 0
-		uint8_t in, out;
-		int i, j;
-		for(i=0; i<PDM_BUFLEN/8; i++){
-			in = pdmBuf[i];
-			out = 0;
-			for(j=0; j<8; j++)
-				out |= (in>>j & 1) << (7-j);
-			pdmBuf[i] = out;
-		}
-#endif
-	
 		/* Decode PDM */
 		Open_PDM_Filter_128(pdmBuf, pcmBuf, GAIN, &filter);
 

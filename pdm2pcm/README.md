@@ -8,6 +8,6 @@ PDM decoding on PC
 -Edit pdm2pcm parameters according to the input PDM frequency and desired
  decimation factor. Note that openpdm library works on 1ms PDM data buffers.
 -Listen to decoded audio with:
- ./pdm2pcm < ./bellazio.dat | aplay -fS16_LE -c1 -r10000
+ ./pdm2pcm < ./bellazio.dat | aplay -fS16_LE -c1 -r8000
 -In one single line:
- bzcat bellazio.txt.bz2 | ./txt2bin | ./pdm2pcm | aplay -fS16_LE -c1 -r10000
+ bzcat bellazio.txt.bz2 | ./txt2bin | ./pdm2pcm | aplay -fS16_LE -c1 -r8000
