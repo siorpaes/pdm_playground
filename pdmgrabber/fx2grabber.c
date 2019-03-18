@@ -2,11 +2,14 @@
  * \author david.siorpaes@gmail.com
  *
  * Reads 8-bit parallel data from Cypress FX2LP development board.
- * 
- * See Cypress application note AN58069
+ * Dumps to standard output data grabbed by Fx2LP. A data decimation factor can be specified.
+ * Optionally, it is possible to extract just one of the eight channels, pack it in 8 bits and emit it.
+ *
+ * See Cypress application note AN58069 for Fx2LP firmware
  * Usage:
  *
- * sudo ./fx2grabber | ../pdm2pcm/pdm2pcm | aplay -fS16_LE -c1 -r8000
+ * ./fx2grabber -d8 > data.dump
+ * ./fx2grabber -p -s -d8 -c0 | ../pdm2pcm/pdm2pcm | aplay -fS16_LE -c1 -r7812
  */
 
 #include <stdio.h>
@@ -29,22 +32,34 @@ struct usbTransfer usbTransfers[N_TRANSFERS];
 
 sem_t semaphore;
 unsigned char* outBuffer;
-unsigned char* outBufferPacked;
+unsigned char* outBufferDec;
 
-int packData(unsigned char* buffer, unsigned char* packedBuffer, int buflen)
+/* Application parameters */
+int decimation, packed, channel, swapBits;
+
+
+/**
+ * \brief Transforms raw data acquired by FX2LP in data to be emitted according to user preferences
+ * \param buffer Raw data from Fx2LP
+ * \param decBuffer Data to be emitted
+ * \param buflen Input buffer length
+ */
+int packData(unsigned char* buffer, unsigned char* decBuffer, int buflen)
 {
 	unsigned char val8;
 	int i, bitn;
 
-	/* Skip 8 bytes */
-	for(i=0; i<buflen/8; i+=8){
+	/* Skip N bytes */
+	for(i=0; i<buflen/decimation; i+=decimation){
 		val8 = 0;
 		for(bitn=0; bitn<8; bitn++){
-			//val8 |= ((buffer[i*8 + 8*bitn] & 1 ) << (bitn));
-			val8 |= ((buffer[i*8 + 8*bitn] & 1 ) << (7-bitn));
+			if(swapBits)
+				val8 |= ((buffer[i*decimation + 8*bitn] >> channel & 1 ) << (7-bitn));
+			else
+				val8 |= ((buffer[i*decimation + 8*bitn] >> channel & 1 ) << (bitn));
 		}
 
-		packedBuffer[i/8] = val8;
+		decBuffer[i/decimation] = val8;
 	}
 	
 	return 0;
@@ -54,30 +69,39 @@ int packData(unsigned char* buffer, unsigned char* packedBuffer, int buflen)
  */
 void* dataOut(void* arg)
 {
-	int ret;
-	int flags;
+	int ret, flags, i, j, decbuflen;
 	unsigned int dataWritten;
 	char del[3] = {'\b', ' ', '\b'};
 
 	/* Set non-blocking IO */
 	flags = fcntl(STDOUT_FILENO, F_GETFL);
 	fcntl(STDOUT_FILENO, F_SETFL, flags | O_NONBLOCK);
-	
+
+	decbuflen = BUFLEN/decimation;
+	if(packed)
+		decbuflen /= 8;
+
 	while(1){
 		sem_wait(&semaphore);
 
-		packData(outBuffer, outBufferPacked, BUFLEN);
+		if(packed){
+			packData(outBuffer, outBufferDec, BUFLEN);
+		}
+		else{
+			for(i=0, j=0; i<BUFLEN; i+=decimation)
+				outBufferDec[j++] = outBuffer[i];
+		}
 		
 		/* Dump buffer to STDOUT */
 		dataWritten = 0;
-		while(dataWritten < BUFLEN/64){
-			ret = write(STDOUT_FILENO, outBufferPacked + dataWritten, BUFLEN/64-dataWritten);
+		while(dataWritten < decbuflen){
+			ret = write(STDOUT_FILENO, outBufferDec + dataWritten, decbuflen-dataWritten);
 			if(ret < 0){
 				fprintf(stderr, "Error writing to STDOUT: %s\n", strerror(errno));
 				exit(errno);
 			}
 
-			if(ret != BUFLEN/64)
+			if(ret != decbuflen)
 				fprintf(stderr, "D");
 
 			dataWritten += ret;
@@ -134,11 +158,45 @@ int main(int argc, char** argv)
 	struct libusb_transfer* xfr;
 	unsigned char* buf;
 	pthread_t dataOutThread;
-	int i;
-	int ret;
-	int arg;
-
+	int i, ret, arg, opt;
 	char asterisk = '*';
+
+	/* Parse options */
+	while((opt = getopt (argc, argv, "hpsd:c:")) != -1){
+		switch(opt){
+			case 'h':
+				printf("%s -h(elp) -d <decimation> -p(acked) -c <channel> -s(wap bits)\n", argv[0]);
+				exit(0);
+				break;
+
+			case 'd':
+				decimation = atoi(optarg);
+				break;
+
+			case 'c':
+				channel = atoi(optarg);
+				break;
+
+			case 's':
+				swapBits = 1;
+				break;
+
+			case 'p':
+				packed = 1;
+				break;
+
+			case '?':
+				if(optopt == 'd' || optopt == 'c'){
+					printf("Options -d and -c require an argument\n");
+					exit(-1);
+				}
+				break;
+
+			default:
+				break;
+		}
+	}
+
 
 	sem_init(&semaphore, 0, 0);
 	
@@ -159,7 +217,7 @@ int main(int argc, char** argv)
 		buf = malloc(BUFLEN);
 		if(buf == NULL){
 			fprintf(stderr, "Can't allocate buffer for USB transfer %i\n", i);
-			exit(-1);
+			exit(-ENOMEM);
 		}
 
 		usbTransfers[i].buf = buf;
@@ -168,16 +226,15 @@ int main(int argc, char** argv)
 	outBuffer = malloc(BUFLEN);
 	if(outBuffer == NULL){
 		fprintf(stderr, "Can't allocate memory\n");
-		exit(-1);
+		exit(-ENOMEM);
 	}
 
-	outBufferPacked = malloc(BUFLEN/8);
-	if(outBufferPacked == NULL){
+	outBufferDec = malloc(BUFLEN/decimation);
+	if(outBufferDec == NULL){
 		fprintf(stderr, "Can't allocate memory\n");
-		exit(-1);
+		exit(-ENOMEM);
 	}
 
-	
 
 	/* Initialize libusb */
 	ret = libusb_init(&ctx);
