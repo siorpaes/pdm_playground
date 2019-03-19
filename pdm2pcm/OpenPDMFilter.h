@@ -68,6 +68,7 @@ typedef struct {
   float LP_HZ;
   float HP_HZ;
   uint16_t Fs;
+  unsigned int nSamples;
   uint8_t In_MicChannels;
   uint8_t Out_MicChannels;
   uint8_t Decimation;

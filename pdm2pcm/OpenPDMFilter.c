@@ -232,7 +232,7 @@ void Open_PDM_Filter_64(uint8_t* data, int16_t* dataOut, uint16_t volume, TPDMFi
   uint8_t j = channels - 1;
 #endif
 
-  for (i = 0, data_out_index = 0; i < Param->Fs / 1000; i++, data_out_index += channels) {
+  for (i = 0, data_out_index = 0; i < Param->nSamples; i++, data_out_index += channels) {
 #ifdef USE_LUT
     Z0 = filter_tables_64[j](data, 0);
     Z1 = filter_tables_64[j](data, 1);
@@ -280,7 +280,7 @@ void Open_PDM_Filter_128(uint8_t* data, int16_t* dataOut, uint16_t volume, TPDMF
   uint8_t j = channels - 1;
 #endif
 
-  for (i = 0, data_out_index = 0; i < Param->Fs / 1000; i++, data_out_index += channels) {
+  for (i = 0, data_out_index = 0; i < Param->nSamples; i++, data_out_index += channels) {
 #ifdef USE_LUT
     Z0 = filter_tables_128[j](data, 0);
     Z1 = filter_tables_128[j](data, 1);
