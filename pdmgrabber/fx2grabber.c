@@ -2,14 +2,14 @@
  * \author david.siorpaes@gmail.com
  *
  * Reads 8-bit parallel data from Cypress FX2LP development board.
- * Dumps to standard output data grabbed by Fx2LP. A data decimation factor can be specified.
+ * Dumps to standard output data grabbed by FX2LP. A data decimation factor can be specified.
  * Optionally, it is possible to extract just one of the eight channels, pack it in 8 bits and emit it.
+ * See Cypress application note AN58069 for FX2LP firmware
+ * Usage (assuming 8MHz FX2LP input clock):
  *
- * See Cypress application note AN58069 for Fx2LP firmware
- * Usage:
- *
- * ./fx2grabber -d8 > data.dump
- * ./fx2grabber -p -s -d8 -c0 | ../pdm2pcm/pdm2pcm | aplay -fS16_LE -c1 -r7812
+ * fx2grabber -d8 > data.dump
+ * fx2grabber -p -s -d8 -c0 | ../pdm2pcm/pdm2pcm -f1024000 -d128 | aplay -fS16_LE -c1 -r8000
+ * fx2grabber -p -s -d4 -c0 | ../pdm2pcm/pdm2pcm -f2048000 -d128 | aplay -fS16_LE -c1 -r16000
  */
 
 #include <stdio.h>
@@ -40,26 +40,27 @@ int decimation, packed, channel, swapBits;
 
 /**
  * \brief Transforms raw data acquired by FX2LP in data to be emitted according to user preferences
- * \param buffer Raw data from Fx2LP
+ * \param buffer Raw data from FX2LP
  * \param decBuffer Data to be emitted
  * \param buflen Input buffer length
  */
 int packData(unsigned char* buffer, unsigned char* decBuffer, int buflen)
 {
 	unsigned char val8;
-	int i, bitn;
+	int i, j, bitn;
+	j = 0;
 
-	/* Skip N bytes */
-	for(i=0; i<buflen/decimation; i+=decimation){
+	/* Skip N=decimation bytes */
+	for(i=0; i<buflen/decimation; i+=8){
 		val8 = 0;
 		for(bitn=0; bitn<8; bitn++){
 			if(swapBits)
-				val8 |= ((buffer[i*decimation + 8*bitn] >> channel & 1 ) << (7-bitn));
+				val8 |= ((buffer[(i+bitn)*decimation] >> channel & 1 ) << (7-bitn));
 			else
-				val8 |= ((buffer[i*decimation + 8*bitn] >> channel & 1 ) << (bitn));
+				val8 |= ((buffer[(i+bitn)*decimation] >> channel & 1 ) << (bitn));
 		}
 
-		decBuffer[i/decimation] = val8;
+		decBuffer[j++] = val8;
 	}
 	
 	return 0;
