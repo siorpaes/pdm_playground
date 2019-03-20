@@ -37,7 +37,7 @@ unsigned char* outBuffer;
 unsigned char* outBufferDec;
 
 /* Application parameters */
-int decimation, packed, channel, swapBits;
+int decimation, packed, channel, swapBits, verbose;
 
 
 /**
@@ -111,7 +111,8 @@ void* dataOut(void* arg)
 		}
 
 		/* Done with buffer: delete marker */
-		ret = write(STDERR_FILENO, &del, 3);
+		if(verbose)
+			ret = write(STDERR_FILENO, &del, 3);
 	}
 }
 
@@ -136,11 +137,12 @@ void callbackUSBTransferComplete(struct libusb_transfer* xfr)
 				fprintf(stderr, "Error in submitting USB transfer\n");
 				exit(1);
 			}
-			
-			ret = write(STDERR_FILENO, &asterisk, 1);
-			if(ret != 1)
-				fprintf(stderr, "Error in writing asterisk\n");
 
+			if(verbose){
+				ret = write(STDERR_FILENO, &asterisk, 1);
+				if(ret != 1)
+					fprintf(stderr, "Error in writing asterisk\n");
+			}
 			break;
 			
 		case LIBUSB_TRANSFER_CANCELLED:
@@ -165,10 +167,10 @@ int main(int argc, char** argv)
 	char asterisk = '*';
 
 	/* Parse options */
-	while((opt = getopt (argc, argv, "hpsd:c:")) != -1){
+	while((opt = getopt (argc, argv, "hpsvd:c:")) != -1){
 		switch(opt){
 			case 'h':
-				printf("%s -h(elp) -d <decimation> -p(acked) -c <channel> -s(wap bits)\n", argv[0]);
+				printf("%s -h(elp) -d <decimation> -p(acked) -c <channel> -s(wap bits) -v(erbose)\n", argv[0]);
 				exit(0);
 				break;
 
@@ -186,6 +188,10 @@ int main(int argc, char** argv)
 
 			case 'p':
 				packed = 1;
+				break;
+
+			case 'v':
+				verbose = 1;
 				break;
 
 			case '?':
@@ -270,8 +276,9 @@ int main(int argc, char** argv)
 			fprintf(stderr, "Error in submitting USB transfer %i\n", i);
 			exit(1);
 		}
-		
-		ret = write(STDERR_FILENO, &asterisk, 1);
+
+		if(verbose)
+			ret = write(STDERR_FILENO, &asterisk, 1);
 	}
 
 
