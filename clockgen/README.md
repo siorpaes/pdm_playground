@@ -1,5 +1,6 @@
 Clock generator for Xilinx Basys3 FPGA board.
 
-JA-1       8192kHz clock
-JA-2       2048kHz clock
-
+|    Signal     | Basys3 IO |
+|---------------|:---------:|
+| 8192kHz clock |   JA-1    |
+| 2048kHz clock |   JA-2    |
