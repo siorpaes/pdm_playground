@@ -17,7 +17,7 @@ int main(int argc, char** argv)
 {
 	int val;
 	uint8_t val8;
- 	int ret, bitn;
+ 	int ret, bitn, dataWritten;
 
 	ret = 1;
 	bitn = 0;
@@ -31,7 +31,11 @@ int main(int argc, char** argv)
 			val8 |= (val << (7-bitn));
 		}
 
-		write(1, &val8, 1);
+		dataWritten = write(1, &val8, 1);
+		if(dataWritten != 1){
+			printf("Error writing to standard output\n");
+			exit(-1);
+		}
 	}
    
 	return 0;

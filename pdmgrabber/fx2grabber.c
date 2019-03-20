@@ -4,6 +4,8 @@
  * Reads 8-bit parallel data from Cypress FX2LP development board.
  * Dumps to standard output data grabbed by FX2LP. A data decimation factor can be specified.
  * Optionally, it is possible to extract just one of the eight channels, pack it in 8 bits and emit it.
+ * This is useful for real time PDM decoding on PC using OpenPDM library.
+ *
  * See Cypress application note AN58069 for FX2LP firmware
  * Usage (assuming 8MHz FX2LP input clock):
  *

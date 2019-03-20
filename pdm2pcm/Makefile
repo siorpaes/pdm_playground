@@ -1,6 +1,6 @@
 all: pdm2pcm txt2bin
 
-CFLAGS = -Wall -I.
+CFLAGS = -Wall -O3 -I.
 
 pdm2pcm: pdm2pcm.c OpenPDMFilter.c
 
