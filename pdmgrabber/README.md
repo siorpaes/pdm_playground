@@ -16,3 +16,5 @@ It is also possible to play in real time one of the PDM channels. To decode and 
 
 The `-c` option specifies which PDM channel to acquire. The `-p` option specifies to pack PDM bits in bytes so they can be decoded by pdm2pcm application. By default the bits are packed with LSB as the oldest sample. If using the `-s` option MSB is the oldest sample instead.
 
+
+Note: to invoke fx2grabber without root permissions add the `z99-fx2lp.rules` file in `/etc/udev/rules.d` and run `udevadm control --reload`

@@ -1,0 +1,2 @@
+# allow users to claim the device
+SUBSYSTEM=="usb", ATTRS{idVendor}=="04b4", ATTRS{idProduct}=="1003", MODE="0666", GROUP="plugdev"
