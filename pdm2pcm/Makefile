@@ -9,4 +9,4 @@ txt2bin: txt2bin.c
 packdata: packdata.c
 
 clean:
-	rm -rf pdm2pcm txt2bin *~
+	rm -rf pdm2pcm txt2bin packdata *~
