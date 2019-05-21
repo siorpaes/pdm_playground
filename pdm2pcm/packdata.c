@@ -1,7 +1,7 @@
 /** \file packdata.c
  * Packs PDM data produced by fx2grabber
  * Usage:
- * ./packdata 0 < ~/InData_0_0.dat | ./pdm2pcm  -f 2048000 -d128 > mic0.pcm
+ * ./packdata 0 < ~/InData_0_0.dat | ./pdm2pcm  -f 2048000 -d128 | aplay -fS16_LE -c1 -r 16000
  */
 
 #include <stdio.h>
