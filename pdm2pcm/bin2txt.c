@@ -18,7 +18,7 @@ int main(int argc, char** argv)
 
 	while(ret == 2){
 		ret = read(0, &input, 2);
-		printf("%i\n", input);
+		printf("%i,\n", input);
 	}
 	
 	return 0;

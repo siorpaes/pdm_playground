@@ -1,4 +1,4 @@
-all: pdm2pcm txt2bin packdata
+all: pdm2pcm txt2bin packdata bin2txt
 
 CFLAGS = -Wall -O3 -I.
 
@@ -8,5 +8,8 @@ txt2bin: txt2bin.c
 
 packdata: packdata.c
 
+bin2txt: bin2txt.c
+
 clean:
-	rm -rf pdm2pcm txt2bin packdata *~
+	rm -rf pdm2pcm txt2bin packdata bin2txt *~
+
